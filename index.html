@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vintage Radio Player</title>
+    <title>Retro Wave Radio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,89 +13,265 @@
         }
 
         body {
-            font-family: 'Courier New', monospace;
-            background: linear-gradient(135deg, #2a1810 0%, #4a3020 100%);
+            font-family: 'Share Tech Mono', monospace;
+            background: #0a0a0f;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated grid background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(90deg, rgba(255, 0, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridScroll 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes gridScroll {
+            0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
+            100% { transform: perspective(500px) rotateX(60deg) translateY(50px); }
+        }
+
+        /* Glowing orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .orb1 {
+            width: 400px;
+            height: 400px;
+            background: #ff00ff;
+            top: -100px;
+            left: -100px;
+            animation: float 15s ease-in-out infinite;
+        }
+
+        .orb2 {
+            width: 500px;
+            height: 500px;
+            background: #00ffff;
+            bottom: -150px;
+            right: -150px;
+            animation: float 20s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(50px, 50px) scale(1.1); }
         }
 
         .radio-container {
-            background: linear-gradient(145deg, #3d2a1f, #5a4030);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            max-width: 500px;
+            background: rgba(10, 10, 20, 0.85);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 50px 40px;
+            max-width: 600px;
             width: 100%;
-            border: 3px solid #8b6f47;
+            border: 1px solid rgba(255, 0, 255, 0.3);
+            box-shadow: 
+                0 0 60px rgba(255, 0, 255, 0.2),
+                0 0 100px rgba(0, 255, 255, 0.1),
+                inset 0 0 60px rgba(255, 0, 255, 0.03);
+            position: relative;
+            z-index: 1;
         }
 
         .title {
             text-align: center;
-            color: #ffe4b5;
-            font-size: 32px;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-            margin-bottom: 30px;
-            letter-spacing: 3px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 48px;
+            background: linear-gradient(135deg, #ff00ff 0%, #00ffff 50%, #ff00ff 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            animation: shimmer 3s linear infinite;
+            text-shadow: 0 0 30px rgba(255, 0, 255, 0.5);
+            letter-spacing: 2px;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #00ffff;
+            font-size: 12px;
+            letter-spacing: 4px;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            opacity: 0.7;
         }
 
         .display {
-            background: #000;
-            border: 3px solid #8b6f47;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 30px;
-            min-height: 100px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid rgba(255, 0, 255, 0.5);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            min-height: 120px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.9);
+            box-shadow: 
+                inset 0 0 30px rgba(255, 0, 255, 0.1),
+                0 0 20px rgba(255, 0, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 255, 0.2), transparent);
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
 
         .station-name {
-            color: #32ff32;
-            font-size: 20px;
+            color: #00ffff;
+            font-size: 24px;
             text-align: center;
-            text-shadow: 0 0 10px #32ff32;
-            margin-bottom: 5px;
+            text-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff;
+            margin-bottom: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
         }
 
         .station-genre {
-            color: #32ff32;
+            color: #ff00ff;
             font-size: 14px;
-            opacity: 0.7;
+            opacity: 0.8;
+            text-shadow: 0 0 10px #ff00ff;
+            position: relative;
+            z-index: 1;
+        }
+
+        .visualizer {
+            display: flex;
+            gap: 3px;
+            justify-content: center;
+            align-items: flex-end;
+            height: 40px;
+            margin-top: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .bar {
+            width: 4px;
+            background: linear-gradient(to top, #ff00ff, #00ffff);
+            border-radius: 2px;
+            animation: pulse 0.6s ease-in-out infinite;
+            opacity: 0.3;
+        }
+
+        .bar:nth-child(1) { animation-delay: 0s; }
+        .bar:nth-child(2) { animation-delay: 0.1s; }
+        .bar:nth-child(3) { animation-delay: 0.2s; }
+        .bar:nth-child(4) { animation-delay: 0.3s; }
+        .bar:nth-child(5) { animation-delay: 0.4s; }
+        .bar:nth-child(6) { animation-delay: 0.3s; }
+        .bar:nth-child(7) { animation-delay: 0.2s; }
+        .bar:nth-child(8) { animation-delay: 0.1s; }
+
+        .visualizer.active .bar {
+            opacity: 1;
+        }
+
+        @keyframes pulse {
+            0%, 100% { height: 10%; }
+            50% { height: 100%; }
         }
 
         .controls {
             display: flex;
             justify-content: center;
-            margin-bottom: 30px;
+            gap: 20px;
+            margin-bottom: 40px;
         }
 
         .play-button {
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
-            background: linear-gradient(145deg, #d4a574, #8b6f47);
+            background: linear-gradient(135deg, #ff00ff 0%, #00ffff 100%);
             border: none;
             cursor: pointer;
             font-size: 36px;
-            color: #2a1810;
+            color: #000;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            transition: all 0.2s;
+            box-shadow: 
+                0 0 30px rgba(255, 0, 255, 0.6),
+                0 0 50px rgba(0, 255, 255, 0.4),
+                inset 0 0 20px rgba(255, 255, 255, 0.2);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+        }
+
+        .play-button::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff00ff, #00ffff);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
 
         .play-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.7);
+            transform: scale(1.1);
+            box-shadow: 
+                0 0 40px rgba(255, 0, 255, 0.8),
+                0 0 70px rgba(0, 255, 255, 0.6);
+        }
+
+        .play-button:hover::before {
+            opacity: 0.5;
+            animation: rotate 2s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .play-button:active {
@@ -102,33 +279,50 @@
         }
 
         .play-button:disabled {
-            opacity: 0.5;
+            opacity: 0.3;
             cursor: not-allowed;
+            box-shadow: none;
         }
 
         .slider-group {
-            margin-bottom: 25px;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px;
-            border-radius: 10px;
+            margin-bottom: 30px;
+            background: rgba(255, 0, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 0, 255, 0.2);
         }
 
         .slider-label {
-            color: #ffe4b5;
-            font-size: 14px;
-            margin-bottom: 10px;
+            color: #00ffff;
+            font-size: 12px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: space-between;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+
+        .slider-value {
+            color: #ff00ff;
+            font-family: 'Orbitron', sans-serif;
         }
 
         .slider {
             width: 100%;
-            height: 8px;
+            height: 6px;
             border-radius: 5px;
-            background: #2a1810;
+            background: rgba(0, 0, 0, 0.5);
             outline: none;
             -webkit-appearance: none;
+            position: relative;
+        }
+
+        .slider::-webkit-slider-track {
+            height: 6px;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.5);
         }
 
         .slider::-webkit-slider-thumb {
@@ -137,76 +331,46 @@
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background: #d4a574;
+            background: linear-gradient(135deg, #ff00ff, #00ffff);
             cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.8);
+            transition: all 0.2s;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 25px rgba(255, 0, 255, 1);
         }
 
         .slider::-moz-range-thumb {
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background: #d4a574;
+            background: linear-gradient(135deg, #ff00ff, #00ffff);
             cursor: pointer;
             border: none;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.8);
         }
 
         .stations-title {
-            color: #ffe4b5;
-            font-size: 16px;
+            color: #00ffff;
+            font-size: 14px;
             font-weight: bold;
-            margin-bottom: 15px;
-            padding-left: 5px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
         }
 
         .station-list {
-            max-height: 250px;
+            max-height: 300px;
             overflow-y: auto;
+            padding-right: 10px;
         }
 
-        .station-button {
-            width: 100%;
-            padding: 15px;
-            margin-bottom: 10px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 2px solid transparent;
-            border-radius: 10px;
-            color: #fff;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: left;
-        }
-
-        .station-button:hover {
-            background: rgba(80, 50, 30, 0.5);
-        }
-
-        .station-button.active {
-            background: rgba(139, 111, 71, 0.4);
-            border-color: #d4a574;
-        }
-
-        .station-button-name {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 4px;
-        }
-
-        .station-button-genre {
-            font-size: 12px;
-            opacity: 0.7;
-        }
-
-        .icon {
-            display: inline-block;
-            width: 16px;
-            text-align: center;
-        }
-
-        /* Scrollbar styling */
         .station-list::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
         }
 
         .station-list::-webkit-scrollbar-track {
@@ -215,18 +379,118 @@
         }
 
         .station-list::-webkit-scrollbar-thumb {
-            background: #8b6f47;
+            background: linear-gradient(to bottom, #ff00ff, #00ffff);
             border-radius: 10px;
+        }
+
+        .station-button {
+            width: 100%;
+            padding: 20px;
+            margin-bottom: 12px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 0, 255, 0.2);
+            border-radius: 15px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .station-button::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: linear-gradient(to bottom, #ff00ff, #00ffff);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .station-button:hover {
+            background: rgba(255, 0, 255, 0.1);
+            border-color: rgba(255, 0, 255, 0.5);
+            transform: translateX(5px);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+        }
+
+        .station-button:hover::before {
+            opacity: 1;
+        }
+
+        .station-button.active {
+            background: rgba(255, 0, 255, 0.15);
+            border-color: #ff00ff;
+            box-shadow: 
+                0 0 20px rgba(255, 0, 255, 0.4),
+                inset 0 0 20px rgba(255, 0, 255, 0.1);
+        }
+
+        .station-button.active::before {
+            opacity: 1;
+        }
+
+        .station-button-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #00ffff;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .station-button.active .station-button-name {
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        .station-button-genre {
+            font-size: 11px;
+            opacity: 0.6;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #ff00ff;
+        }
+
+        @media (max-width: 600px) {
+            .radio-container {
+                padding: 30px 20px;
+            }
+
+            .title {
+                font-size: 36px;
+            }
+
+            .play-button {
+                width: 70px;
+                height: 70px;
+                font-size: 28px;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+
     <div class="radio-container">
-        <div class="title">VINTAGE RADIO</div>
+        <div class="title">RETRO WAVE</div>
+        <div class="subtitle">// Radio //</div>
         
         <div class="display">
-            <div class="station-name" id="stationName">Select a Station</div>
+            <div class="station-name" id="stationName">SELECT FREQUENCY</div>
             <div class="station-genre" id="stationGenre"></div>
+            <div class="visualizer" id="visualizer">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
         </div>
 
         <div class="controls">
@@ -235,21 +499,21 @@
 
         <div class="slider-group">
             <div class="slider-label">
-                <span class="icon">🔊</span>
                 <span>Volume</span>
+                <span class="slider-value" id="volumeValue">70%</span>
             </div>
             <input type="range" min="0" max="100" value="70" class="slider" id="volumeSlider">
         </div>
 
         <div class="slider-group">
             <div class="slider-label">
-                <span class="icon">📻</span>
                 <span>Vintage Filter</span>
+                <span class="slider-value" id="filterValue">80%</span>
             </div>
             <input type="range" min="0" max="100" value="80" class="slider" id="filterSlider">
         </div>
 
-        <div class="stations-title">STATIONS</div>
+        <div class="stations-title">⟨ FREQUENCIES ⟩</div>
         <div class="station-list" id="stationList"></div>
     </div>
 
@@ -259,7 +523,7 @@
             { name: "Jazz24", url: "https://live.wostreaming.net/direct/ppm-jazz24aac-ibc1", genre: "Jazz" },
             { name: "KEXP 90.3 FM", url: "https://kexp-mp3-128.streamguys1.com/kexp128.mp3", genre: "Alternative" },
             { name: "SomaFM Groove Salad", url: "https://ice1.somafm.com/groovesalad-128-mp3", genre: "Ambient" },
-            { name: "181.FM The Buzz", url: "https://listen.181fm.com/181-buzz_128k.mp3", genre: "Alternative Rock" }
+            { name: "181.FM The Buzz", url: "https://listen.181fm.com/181-buzz_128k.mp3", genre: "Alt Rock" }
         ];
 
         let audioContext;
@@ -276,15 +540,16 @@
         let isPlaying = false;
         let filterIntensity = 0.8;
 
-        // Initialize
         const playButton = document.getElementById('playButton');
         const volumeSlider = document.getElementById('volumeSlider');
         const filterSlider = document.getElementById('filterSlider');
+        const volumeValue = document.getElementById('volumeValue');
+        const filterValue = document.getElementById('filterValue');
         const stationName = document.getElementById('stationName');
         const stationGenre = document.getElementById('stationGenre');
         const stationList = document.getElementById('stationList');
+        const visualizer = document.getElementById('visualizer');
 
-        // Create station buttons
         stations.forEach((station, index) => {
             const button = document.createElement('button');
             button.className = 'station-button';
@@ -306,35 +571,28 @@
             sourceNode = audioContext.createMediaElementSource(audioElement);
             gainNode = audioContext.createGain();
             
-            // Create filters for vintage radio effect
-            // Low shelf - reduce bass
             filterLow = audioContext.createBiquadFilter();
             filterLow.type = 'lowshelf';
             filterLow.frequency.value = 200;
             filterLow.gain.value = -12;
             
-            // Peaking - reduce mids
             filterMid = audioContext.createBiquadFilter();
             filterMid.type = 'peaking';
             filterMid.frequency.value = 1000;
             filterMid.Q.value = 1.0;
             filterMid.gain.value = -6;
             
-            // High shelf - boost treble
             filterHigh = audioContext.createBiquadFilter();
             filterHigh.type = 'highshelf';
             filterHigh.frequency.value = 3000;
             filterHigh.gain.value = 6;
             
-            // Distortion for analog warmth
             distortionNode = audioContext.createWaveShaper();
             distortionNode.curve = makeDistortionCurve(20);
             
-            // Simple reverb using convolver
             convolverNode = audioContext.createConvolver();
             createSimpleReverb();
             
-            // Connect the nodes
             sourceNode.connect(filterLow);
             filterLow.connect(filterMid);
             filterMid.connect(filterHigh);
@@ -360,7 +618,7 @@
 
         function createSimpleReverb() {
             const sampleRate = audioContext.sampleRate;
-            const length = sampleRate * 0.5; // 0.5 second reverb
+            const length = sampleRate * 0.5;
             const impulse = audioContext.createBuffer(2, length, sampleRate);
             
             for (let channel = 0; channel < 2; channel++) {
@@ -377,16 +635,14 @@
             setupAudioContext();
             currentStation = index;
             
-            // Update UI
             document.querySelectorAll('.station-button').forEach((btn, i) => {
                 btn.classList.toggle('active', i === index);
             });
             
             stationName.textContent = stations[index].name;
-            stationGenre.textContent = stations[index].genre;
+            stationGenre.textContent = `// ${stations[index].genre.toUpperCase()} //`;
             playButton.disabled = false;
             
-            // Load and play
             audioElement.src = stations[index].url;
             audioElement.load();
             play();
@@ -400,6 +656,7 @@
             audioElement.play().then(() => {
                 isPlaying = true;
                 playButton.textContent = '⏸';
+                visualizer.classList.add('active');
             }).catch(err => {
                 console.error('Playback error:', err);
             });
@@ -409,6 +666,7 @@
             audioElement.pause();
             isPlaying = false;
             playButton.textContent = '▶';
+            visualizer.classList.remove('active');
         }
 
         playButton.addEventListener('click', () => {
@@ -420,33 +678,32 @@
         });
 
         volumeSlider.addEventListener('input', (e) => {
+            const val = e.target.value;
+            volumeValue.textContent = val + '%';
             if (gainNode) {
-                gainNode.gain.value = e.target.value / 100;
+                gainNode.gain.value = val / 100;
             }
         });
 
         filterSlider.addEventListener('input', (e) => {
-            filterIntensity = e.target.value / 100;
+            const val = e.target.value;
+            filterValue.textContent = val + '%';
+            filterIntensity = val / 100;
             
             if (filterLow && filterMid && filterHigh && distortionNode) {
-                // Adjust filter gains based on intensity
                 filterLow.gain.value = -12 * filterIntensity;
                 filterMid.gain.value = -6 * filterIntensity;
                 filterHigh.gain.value = 6 * filterIntensity;
-                
-                // Adjust distortion
                 distortionNode.curve = makeDistortionCurve(20 * filterIntensity);
             }
         });
 
-        // Handle audio errors
-        document.addEventListener('DOMContentLoaded', () => {
-            audioElement = new Audio();
-            audioElement.addEventListener('error', (e) => {
-                console.error('Audio error:', e);
-                stationName.textContent = 'Stream Error - Try Another';
-                pause();
-            });
+        audioElement = new Audio();
+        audioElement.addEventListener('error', (e) => {
+            console.error('Audio error:', e);
+            stationName.textContent = 'SIGNAL LOST';
+            stationGenre.textContent = '// TRY ANOTHER FREQUENCY //';
+            pause();
         });
     </script>
 </body>
