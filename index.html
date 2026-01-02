@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vintage Radio Player</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #2a1810 0%, #4a3020 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .radio-container {
+            background: linear-gradient(145deg, #3d2a1f, #5a4030);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            max-width: 500px;
+            width: 100%;
+            border: 3px solid #8b6f47;
+        }
+
+        .title {
+            text-align: center;
+            color: #ffe4b5;
+            font-size: 32px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            margin-bottom: 30px;
+            letter-spacing: 3px;
+        }
+
+        .display {
+            background: #000;
+            border: 3px solid #8b6f47;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.9);
+        }
+
+        .station-name {
+            color: #32ff32;
+            font-size: 20px;
+            text-align: center;
+            text-shadow: 0 0 10px #32ff32;
+            margin-bottom: 5px;
+        }
+
+        .station-genre {
+            color: #32ff32;
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .play-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #d4a574, #8b6f47);
+            border: none;
+            cursor: pointer;
+            font-size: 36px;
+            color: #2a1810;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            transition: all 0.2s;
+        }
+
+        .play-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.7);
+        }
+
+        .play-button:active {
+            transform: scale(0.95);
+        }
+
+        .play-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .slider-group {
+            margin-bottom: 25px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .slider-label {
+            color: #ffe4b5;
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #2a1810;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #d4a574;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #d4a574;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .stations-title {
+            color: #ffe4b5;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-left: 5px;
+        }
+
+        .station-list {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .station-button {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .station-button:hover {
+            background: rgba(80, 50, 30, 0.5);
+        }
+
+        .station-button.active {
+            background: rgba(139, 111, 71, 0.4);
+            border-color: #d4a574;
+        }
+
+        .station-button-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .station-button-genre {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .icon {
+            display: inline-block;
+            width: 16px;
+            text-align: center;
+        }
+
+        /* Scrollbar styling */
+        .station-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .station-list::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+
+        .station-list::-webkit-scrollbar-thumb {
+            background: #8b6f47;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="radio-container">
+        <div class="title">VINTAGE RADIO</div>
+        
+        <div class="display">
+            <div class="station-name" id="stationName">Select a Station</div>
+            <div class="station-genre" id="stationGenre"></div>
+        </div>
+
+        <div class="controls">
+            <button class="play-button" id="playButton" disabled>▶</button>
+        </div>
+
+        <div class="slider-group">
+            <div class="slider-label">
+                <span class="icon">🔊</span>
+                <span>Volume</span>
+            </div>
+            <input type="range" min="0" max="100" value="70" class="slider" id="volumeSlider">
+        </div>
+
+        <div class="slider-group">
+            <div class="slider-label">
+                <span class="icon">📻</span>
+                <span>Vintage Filter</span>
+            </div>
+            <input type="range" min="0" max="100" value="80" class="slider" id="filterSlider">
+        </div>
+
+        <div class="stations-title">STATIONS</div>
+        <div class="station-list" id="stationList"></div>
+    </div>
+
+    <script>
+        const stations = [
+            { name: "Classical KING FM", url: "https://classicalking.streamguys1.com/king-aac", genre: "Classical" },
+            { name: "Jazz24", url: "https://live.wostreaming.net/direct/ppm-jazz24aac-ibc1", genre: "Jazz" },
+            { name: "KEXP 90.3 FM", url: "https://kexp-mp3-128.streamguys1.com/kexp128.mp3", genre: "Alternative" },
+            { name: "SomaFM Groove Salad", url: "https://ice1.somafm.com/groovesalad-128-mp3", genre: "Ambient" },
+            { name: "181.FM The Buzz", url: "https://listen.181fm.com/181-buzz_128k.mp3", genre: "Alternative Rock" }
+        ];
+
+        let audioContext;
+        let audioElement;
+        let sourceNode;
+        let gainNode;
+        let filterLow;
+        let filterMid;
+        let filterHigh;
+        let distortionNode;
+        let convolverNode;
+        
+        let currentStation = null;
+        let isPlaying = false;
+        let filterIntensity = 0.8;
+
+        // Initialize
+        const playButton = document.getElementById('playButton');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const filterSlider = document.getElementById('filterSlider');
+        const stationName = document.getElementById('stationName');
+        const stationGenre = document.getElementById('stationGenre');
+        const stationList = document.getElementById('stationList');
+
+        // Create station buttons
+        stations.forEach((station, index) => {
+            const button = document.createElement('button');
+            button.className = 'station-button';
+            button.innerHTML = `
+                <div class="station-button-name">${station.name}</div>
+                <div class="station-button-genre">${station.genre}</div>
+            `;
+            button.addEventListener('click', () => selectStation(index));
+            stationList.appendChild(button);
+        });
+
+        function setupAudioContext() {
+            if (audioContext) return;
+
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            audioElement = new Audio();
+            audioElement.crossOrigin = "anonymous";
+            
+            sourceNode = audioContext.createMediaElementSource(audioElement);
+            gainNode = audioContext.createGain();
+            
+            // Create filters for vintage radio effect
+            // Low shelf - reduce bass
+            filterLow = audioContext.createBiquadFilter();
+            filterLow.type = 'lowshelf';
+            filterLow.frequency.value = 200;
+            filterLow.gain.value = -12;
+            
+            // Peaking - reduce mids
+            filterMid = audioContext.createBiquadFilter();
+            filterMid.type = 'peaking';
+            filterMid.frequency.value = 1000;
+            filterMid.Q.value = 1.0;
+            filterMid.gain.value = -6;
+            
+            // High shelf - boost treble
+            filterHigh = audioContext.createBiquadFilter();
+            filterHigh.type = 'highshelf';
+            filterHigh.frequency.value = 3000;
+            filterHigh.gain.value = 6;
+            
+            // Distortion for analog warmth
+            distortionNode = audioContext.createWaveShaper();
+            distortionNode.curve = makeDistortionCurve(20);
+            
+            // Simple reverb using convolver
+            convolverNode = audioContext.createConvolver();
+            createSimpleReverb();
+            
+            // Connect the nodes
+            sourceNode.connect(filterLow);
+            filterLow.connect(filterMid);
+            filterMid.connect(filterHigh);
+            filterHigh.connect(distortionNode);
+            distortionNode.connect(convolverNode);
+            convolverNode.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            gainNode.gain.value = volumeSlider.value / 100;
+        }
+
+        function makeDistortionCurve(amount) {
+            const samples = 44100;
+            const curve = new Float32Array(samples);
+            const deg = Math.PI / 180;
+            
+            for (let i = 0; i < samples; i++) {
+                const x = (i * 2) / samples - 1;
+                curve[i] = ((3 + amount) * x * 20 * deg) / (Math.PI + amount * Math.abs(x));
+            }
+            return curve;
+        }
+
+        function createSimpleReverb() {
+            const sampleRate = audioContext.sampleRate;
+            const length = sampleRate * 0.5; // 0.5 second reverb
+            const impulse = audioContext.createBuffer(2, length, sampleRate);
+            
+            for (let channel = 0; channel < 2; channel++) {
+                const channelData = impulse.getChannelData(channel);
+                for (let i = 0; i < length; i++) {
+                    channelData[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 2);
+                }
+            }
+            
+            convolverNode.buffer = impulse;
+        }
+
+        function selectStation(index) {
+            setupAudioContext();
+            currentStation = index;
+            
+            // Update UI
+            document.querySelectorAll('.station-button').forEach((btn, i) => {
+                btn.classList.toggle('active', i === index);
+            });
+            
+            stationName.textContent = stations[index].name;
+            stationGenre.textContent = stations[index].genre;
+            playButton.disabled = false;
+            
+            // Load and play
+            audioElement.src = stations[index].url;
+            audioElement.load();
+            play();
+        }
+
+        function play() {
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            
+            audioElement.play().then(() => {
+                isPlaying = true;
+                playButton.textContent = '⏸';
+            }).catch(err => {
+                console.error('Playback error:', err);
+            });
+        }
+
+        function pause() {
+            audioElement.pause();
+            isPlaying = false;
+            playButton.textContent = '▶';
+        }
+
+        playButton.addEventListener('click', () => {
+            if (isPlaying) {
+                pause();
+            } else {
+                play();
+            }
+        });
+
+        volumeSlider.addEventListener('input', (e) => {
+            if (gainNode) {
+                gainNode.gain.value = e.target.value / 100;
+            }
+        });
+
+        filterSlider.addEventListener('input', (e) => {
+            filterIntensity = e.target.value / 100;
+            
+            if (filterLow && filterMid && filterHigh && distortionNode) {
+                // Adjust filter gains based on intensity
+                filterLow.gain.value = -12 * filterIntensity;
+                filterMid.gain.value = -6 * filterIntensity;
+                filterHigh.gain.value = 6 * filterIntensity;
+                
+                // Adjust distortion
+                distortionNode.curve = makeDistortionCurve(20 * filterIntensity);
+            }
+        });
+
+        // Handle audio errors
+        document.addEventListener('DOMContentLoaded', () => {
+            audioElement = new Audio();
+            audioElement.addEventListener('error', (e) => {
+                console.error('Audio error:', e);
+                stationName.textContent = 'Stream Error - Try Another';
+                pause();
+            });
+        });
+    </script>
+</body>
+</html>
